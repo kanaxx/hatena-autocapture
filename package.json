@@ -1,0 +1,7 @@
+{
+  "dependencies": {
+    "cloudinary": "^1.27.0",
+    "moment": "^2.29.1",
+    "puppeteer": "^10.2.0"
+  }
+}
