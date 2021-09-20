@@ -35,7 +35,10 @@ if (!fs.existsSync(imageDir)){
   await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.82 Safari/537.36');
   await page.setViewport({ width:viewPoint.width, height:viewPoint.height });
 
-  await page.goto('https://www.hatena.ne.jp/login?location='+blogAdminUrl,{waitUntil: "domcontentloaded"});
+  const response = await page.goto('https://www.hatena.ne.jp/login?location='+blogAdminUrl,{waitUntil: "domcontentloaded"});
+  console.log('login page header');
+  console.log(response);
+  
   await page.type('input[name="name"]', hatenaId);
   await page.type('input[name="password"]', hatenaPass);
 
@@ -48,11 +51,13 @@ if (!fs.existsSync(imageDir)){
   console.info('open logged in & top');
   await page.screenshot({ path: imageDir + captureTop, clip:captureClipArea });
 
+  let response1 = null;
   await Promise.all([
-    page.goto(blogAdminAccessLogUrl),
+    response1 = page.goto(blogAdminAccessLogUrl),
     page.waitForNavigation({timeout: 60000, waitUntil: "networkidle0"}),
   ]);
   console.info('open accesslog');
+  console.log(response1);
 
   await page.waitForTimeout(1000);
   await page.screenshot({ path: imageDir + captureAccessLog, clip:captureClipArea });
