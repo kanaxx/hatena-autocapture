@@ -19,7 +19,7 @@ const blogAdminUrl = process.env.blog_admin_url;
 const blogAdminAccessLogUrl = blogAdminUrl + 'accesslog';
 console.log(hatenaId,hatenaPass,blogAdminUrl);
 
-const puppeteerOptions = process.env.DYNO ? { args: ['--no-sandbox', '--disable-setuid-sandbox'], slowMo:100 } : { headless: true, slowMo:100 };
+const puppeteerOptions = process.env.DYNO ? { args: ['--no-sandbox', '--disable-setuid-sandbox', '--lang=ja-JP,ja'], slowMo:100 } : { headless: true, slowMo:100 };
 const imageDir = './captures/';
 
 if (!fs.existsSync(imageDir)){
