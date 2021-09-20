@@ -7,7 +7,7 @@ const fs = require('fs');
 const viewPoint = {width:1000, height:800};
 const captureOffset = {x:240, y:40};
 const captureClipArea = { x:captureOffset.x, y:captureOffset.y, width:(viewPoint.width - captureOffset.x), height:viewPoint.height};
-const puppeterOptions = process.env.DYNO ? { args: ['--no-sandbox', '--disable-setuid-sandbox', '--lang=ja-JP,ja'], slowMo:100 } : { headless: true, slowMo:100 };
+const puppeteerOptions = process.env.DYNO ? { args: ['--no-sandbox', '--disable-setuid-sandbox', '--lang=ja-JP,ja'], slowMo:100 } : { headless: true, slowMo:100 };
 
 // for date
 const baseFilename = moment().format('YYYYMMDD-HHmmss');
@@ -28,9 +28,8 @@ if (!fs.existsSync(imageDir)){
     fs.mkdirSync(imageDir);
 }
 
-
 (async () => {
-  const browser = await puppeteer.launch(puppeterOptions);
+  const browser = await puppeteer.launch(puppeteerOptions);
 
   const page = (await browser.pages())[0];
   await page.setExtraHTTPHeaders({'Accept-Language': 'ja'});
