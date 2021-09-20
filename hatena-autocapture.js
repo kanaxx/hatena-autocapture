@@ -29,8 +29,10 @@ if (!fs.existsSync(imageDir)){
 
 (async () => {
   const browser = await puppeteer.launch(puppeteerOptions);
+
   const page = (await browser.pages())[0];
-  page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.82 Safari/537.36');
+  await page.setExtraHTTPHeaders({'Accept-Language': 'ja'});
+  await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.82 Safari/537.36');
   await page.setViewport({ width:viewPoint.width, height:viewPoint.height });
 
   await page.goto('https://www.hatena.ne.jp/login?location='+blogAdminUrl,{waitUntil: "domcontentloaded"});
