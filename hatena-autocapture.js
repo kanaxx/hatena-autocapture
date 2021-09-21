@@ -1,4 +1,5 @@
-const moment = require('moment');
+const moment = require('moment-timezone');
+//const moment = require('moment');
 const puppeteer = require('puppeteer');
 const cloudinary = require('cloudinary')
 const fs = require('fs');
@@ -10,6 +11,7 @@ const captureClipArea = { x:captureOffset.x, y:captureOffset.y, width:(viewPoint
 const puppeteerOptions = process.env.DYNO ? { args: ['--no-sandbox', '--disable-setuid-sandbox', '--lang=ja-JP,ja'], slowMo:100 } : { headless: true, slowMo:100 };
 
 // for date
+moment.tz.setDefault('Asia/Tokyo'); 
 const baseFilename = moment().format('YYYYMMDD-HHmmss');
 const captureTop = baseFilename + '_hatena-top.png';
 const captureAccessLog = baseFilename + '_hatena-access-log.png';
@@ -23,6 +25,11 @@ const blogAdminAccessLogUrl = blogAdminUrl + 'accesslog';
 
 // other
 const imageDir = './captures/';
+
+if( !hatenaId || !hatenaPass || !blogAdminUrl){
+  console.error('環境変数がセットされていません');
+  process.exit(1);
+}
 
 if (!fs.existsSync(imageDir)){
     fs.mkdirSync(imageDir);
