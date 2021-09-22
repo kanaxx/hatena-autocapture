@@ -1,5 +1,4 @@
 const moment = require('moment-timezone');
-//const moment = require('moment');
 const puppeteer = require('puppeteer');
 const cloudinary = require('cloudinary')
 const fs = require('fs');
@@ -8,7 +7,9 @@ const fs = require('fs');
 const viewPoint = {width:1000, height:800};
 const captureOffset = {x:240, y:40};
 const captureClipArea = { x:captureOffset.x, y:captureOffset.y, width:(viewPoint.width - captureOffset.x), height:viewPoint.height};
-const puppeteerOptions = process.env.DYNO ? { args: ['--no-sandbox', '--disable-setuid-sandbox', '--lang=ja-JP,ja'], slowMo:100 } : { headless: true, slowMo:100 };
+const puppeteerOptions = process.env.DYNO ? 
+  { args: ['--no-sandbox', '--disable-setuid-sandbox', '--lang=ja-JP,ja'], slowMo:100 } : 
+  { headless: true, slowMo:100 };
 
 // for date
 moment.tz.setDefault('Asia/Tokyo'); 
@@ -25,6 +26,8 @@ const blogAdminAccessLogUrl = blogAdminUrl + 'accesslog';
 
 // other
 const imageDir = './captures/';
+const loginRetryMax = 5;
+let loginSuccess = false;
 
 if( !hatenaId || !hatenaPass || !blogAdminUrl){
   console.error('環境変数がセットされていません');
@@ -43,22 +46,38 @@ if (!fs.existsSync(imageDir)){
   await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.82 Safari/537.36');
   await page.setViewport({ width:viewPoint.width, height:viewPoint.height });
 
-  console.info('goto login page');
-  const response = await page.goto('https://www.hatena.ne.jp/login?location='+blogAdminUrl,{waitUntil: "domcontentloaded"});
-  console.log('login page response');
-  console.log(response);
+  for( let i=0; i<loginRetryMax; i++){
+    console.info('goto login page');
+    const response = await page.goto('https://www.hatena.ne.jp/login?location='+blogAdminUrl,{waitUntil: "domcontentloaded"});
+    console.log('login page response');
+    console.log(response);
 
-  console.info('input login information');
-  await page.type('input[name="name"]', hatenaId);
-  await page.type('input[name="password"]', hatenaPass);
+    console.info('input login information');
+    await page.type('input[name="name"]', hatenaId);
+    await page.type('input[name="password"]', hatenaPass);
 
-  await Promise.all([
-    page.click('button#login-button'),
-    page.waitForNavigation({timeout: 60000, waitUntil: "domcontentloaded"}),
-  ]);
+    await Promise.all([
+      page.click('button#login-button'),
+      page.waitForNavigation({timeout: 60000, waitUntil: "domcontentloaded"}),
+    ]);
+    await page.waitForTimeout(1000);
+
+    console.info('current url is %s', page.url());
+
+    if( page.url().indexOf(blogAdminUrl)>=0 ){
+      console.info('reached top page');
+      loginSuccess=true;
+      break;
+    }else{
+      console.info('login failed. wait 10 seconds and try again');
+      await sleep(10000);
+    }
+  }
   
-  console.info('reached top page');
-  await page.waitForTimeout(1000);
+  if(!loginSuccess){
+    console.error('exit because login failed');
+    process.exit(1);
+  }
 
   console.info('take screenshot top');
   await page.screenshot({ path: imageDir + captureTop, clip:captureClipArea });
@@ -111,3 +130,8 @@ if (!fs.existsSync(imageDir)){
   console.info('End of Program');
   
 })();
+
+async function sleep(delay) {
+  return new Promise(resolve => setTimeout(resolve, delay));
+}
+
