@@ -62,7 +62,7 @@ if (!fs.existsSync(imageDir)){
     ]);
     await page.waitForTimeout(1000);
 
-    console.info('current url is %s', page.url());
+    console.info('current url is %s [%s]', page.url(), i);
 
     if( page.url().indexOf(blogAdminUrl)>=0 ){
       console.info('reached top page');
