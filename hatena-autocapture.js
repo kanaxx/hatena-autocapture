@@ -48,30 +48,34 @@ if (!fs.existsSync(imageDir)){
 
   for( let i=0; i<loginRetryMax; i++){
     console.info('goto login page');
-    const response = await page.goto('https://www.hatena.ne.jp/login?location='+blogAdminUrl,{waitUntil: "domcontentloaded"});
-    console.log('login page response');
-    console.log(response);
+    try{
+      const response = await page.goto('https://www.hatena.ne.jp/login?location='+blogAdminUrl,{waitUntil: "domcontentloaded"});
+      console.log('login page response');
+      console.log(response);
 
-    console.info('input login information');
-    await page.type('input[name="name"]', hatenaId);
-    await page.type('input[name="password"]', hatenaPass);
+      console.info('input login information');
+      await page.type('input[name="name"]', hatenaId);
+      await page.type('input[name="password"]', hatenaPass);
 
-    await Promise.all([
-      page.click('button#login-button'),
-      page.waitForNavigation({timeout: 60000, waitUntil: "domcontentloaded"}),
-    ]);
-    await page.waitForTimeout(1000);
+      await Promise.all([
+        page.click('button#login-button'),
+        page.waitForNavigation({timeout: 60000, waitUntil: "domcontentloaded"}),
+      ]);
+      await page.waitForTimeout(1000);
 
-    console.info('current url is %s [%s]', page.url(), i);
+      console.info('current url is %s [%s]', page.url(), i);
 
-    if( page.url().indexOf(blogAdminUrl)>=0 ){
-      console.info('reached top page');
-      loginSuccess=true;
-      break;
-    }else{
-      console.info('login failed. wait 10 seconds and try again');
-      await sleep(10000);
+      if( page.url().indexOf(blogAdminUrl)>=0 ){
+        console.info('reached top page');
+        loginSuccess=true;
+        break;
+      }
+    }catch(e){
+      console.error('error occurred.');
+      console.error(e);
     }
+    console.info('login failed. wait 10 seconds and try again');
+    await sleep(10000);
   }
   
   if(!loginSuccess){
