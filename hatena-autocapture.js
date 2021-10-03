@@ -14,9 +14,13 @@ const puppeteerOptions = process.env.DYNO ?
 // for date
 moment.tz.setDefault('Asia/Tokyo'); 
 const baseFilename = moment().format('YYYYMMDD-HHmmss');
-const captureTop = baseFilename + '_hatena-top.png';
-const captureAccessLog = baseFilename + '_hatena-access-log.png';
 const overlayText = moment().format('YYYY年M月D日');
+
+//for file
+const imageDir = './captures/';
+const captureTop = baseFilename + '_hatena-top';
+const captureAccessLog = baseFilename + '_hatena-access-log';
+const fileFormat = 'png';
 
 // for env
 const hatenaId = process.env.hatena_id;
@@ -25,7 +29,6 @@ const blogAdminUrl = process.env.blog_admin_url;
 const blogAdminAccessLogUrl = blogAdminUrl + 'accesslog';
 
 // other
-const imageDir = './captures/';
 const loginRetryMax = 5;
 let loginSuccess = false;
 
@@ -84,7 +87,7 @@ if (!fs.existsSync(imageDir)){
   }
 
   console.info('take screenshot top');
-  await page.screenshot({ path: imageDir + captureTop, clip:captureClipArea });
+  await page.screenshot({ path: makeFilePath(imageDir, captureTop, fileFormat), clip:captureClipArea });
 
   console.info('goto access log page');
   let response2 = null;
@@ -98,7 +101,7 @@ if (!fs.existsSync(imageDir)){
   await page.waitForTimeout(1000);
 
   console.info('take screenshot access log');
-  await page.screenshot({ path: imageDir + captureAccessLog, clip:captureClipArea });
+  await page.screenshot({ path: makeFilePath(imageDir, captureAccessLog, fileFormat), clip:captureClipArea });
   browser.close()
 
   //環境変数にCoudinaryがあるときだけ実施
@@ -107,7 +110,7 @@ if (!fs.existsSync(imageDir)){
 
     for(file of [captureTop, captureAccessLog] ){
       await cloudinary.v2.uploader.upload(
-        imageDir + file,
+        makeFilePath(imageDir, file, fileFormat),
         {
           public_id: file, folder:'hatena',type:'private',
           transformation : [
@@ -138,4 +141,8 @@ if (!fs.existsSync(imageDir)){
 async function sleep(delay) {
   return new Promise(resolve => setTimeout(resolve, delay));
 }
+function makeFilePath(dir, file, ext){
+  return dir + file + '.' + ext;
+}
 
+ 
