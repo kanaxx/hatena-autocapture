@@ -9,7 +9,7 @@ const captureOffset = {x:240, y:40};
 const captureClipArea = { x:captureOffset.x, y:captureOffset.y, width:(viewPoint.width - captureOffset.x), height:viewPoint.height};
 const puppeteerOptions = process.env.DYNO ? 
   { args: ['--no-sandbox', '--disable-setuid-sandbox', '--lang=ja-JP,ja'], slowMo:100 } : 
-  { headless: true, slowMo:100 };
+{ headless: true, slowMo:100 };
 
 // for date
 moment.tz.setDefault('Asia/Tokyo'); 
@@ -64,7 +64,9 @@ if (!fs.existsSync(imageDir)){
         page.click('button#login-button'),
         page.waitForNavigation({timeout: 60000, waitUntil: "domcontentloaded"}),
       ]);
-      await page.waitForTimeout(1000);
+      console.info('current url is %s [%s]', page.url(), i);
+
+      await page.waitForTimeout(10000);
 
       console.info('current url is %s [%s]', page.url(), i);
 

@@ -1,8 +1,9 @@
 {
   "dependencies": {
     "cloudinary": "^1.27.0",
+    "dotenv": "^16.0.2",
     "moment": "^2.29.1",
     "moment-timezone": "^0.5.33",
-    "puppeteer": "^10.2.0"
+    "puppeteer": "^17.1.3"
   }
 }
