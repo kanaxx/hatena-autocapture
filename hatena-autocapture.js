@@ -7,9 +7,7 @@ const fs = require('fs');
 const viewPoint = {width:1000, height:800};
 const captureOffset = {x:240, y:40};
 const captureClipArea = { x:captureOffset.x, y:captureOffset.y, width:(viewPoint.width - captureOffset.x), height:viewPoint.height};
-const puppeteerOptions = process.env.DYNO ? 
-  { args: ['--no-sandbox', '--disable-setuid-sandbox', '--lang=ja-JP,ja'], slowMo:100 } : 
-{ headless: true, slowMo:100 };
+const puppeteerOptions = { headless: true, slowMo:100, ignoreHTTPSErrors: false };
 
 // for date
 moment.tz.setDefault('Asia/Tokyo'); 
