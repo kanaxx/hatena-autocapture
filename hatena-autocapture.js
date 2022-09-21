@@ -7,7 +7,7 @@ const fs = require('fs');
 const viewPoint = {width:1000, height:800};
 const captureOffset = {x:240, y:40};
 const captureClipArea = { x:captureOffset.x, y:captureOffset.y, width:(viewPoint.width - captureOffset.x), height:viewPoint.height};
-const puppeteerOptions = { headless: true, slowMo:100, ignoreHTTPSErrors: false };
+const puppeteerOptions = { headless: true, slowMo:100, ignoreHTTPSErrors: true };
 
 // for date
 moment.tz.setDefault('Asia/Tokyo'); 
