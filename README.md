@@ -2,6 +2,13 @@
 
 はてなブログの管理画面をキャプチャーするツールです。
 
+## サンプル
+トップ画面  
+<img src="https://res.cloudinary.com/lalala-z/image/private/s--mJkWxX9u--/v1664027721/hatena/20220924-225501_hatena-top.png.png" width="300px">
+
+アクセス解析画面  
+<img src="https://res.cloudinary.com/lalala-z/image/private/s--LqlZCt-R--/v1664027726/hatena/20220924-225501_hatena-accesslog.png.png" width="300px">
+
 ## How to use
 
 ```
